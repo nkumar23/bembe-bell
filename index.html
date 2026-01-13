@@ -681,6 +681,228 @@
       opacity: 0.4;
       pointer-events: none;
     }
+
+    /* Recording UI */
+    .record-section {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px dashed rgba(107, 83, 68, 0.4);
+    }
+
+    .record-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-deep);
+      border: 2px solid #c44;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .record-btn:hover {
+      background: rgba(204, 68, 68, 0.2);
+      border-color: #e55;
+    }
+
+    .record-btn .record-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #c44;
+      transition: all 0.2s ease;
+    }
+
+    .record-btn.recording {
+      border-color: #f55;
+      animation: record-pulse 1s ease-in-out infinite;
+    }
+
+    .record-btn.recording .record-dot {
+      background: #f55;
+      border-radius: 3px;
+      width: 12px;
+      height: 12px;
+    }
+
+    @keyframes record-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 85, 85, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(255, 85, 85, 0); }
+    }
+
+    .record-btn.has-recording {
+      border-color: var(--group-3);
+    }
+
+    .record-btn.has-recording .record-dot {
+      background: var(--group-3);
+    }
+
+    .record-status {
+      flex: 1;
+      font-size: 0.6rem;
+      color: var(--cream-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .record-status.recording {
+      color: #f55;
+    }
+
+    .record-status.has-recording {
+      color: var(--group-3);
+    }
+
+    .record-status .cycle-count {
+      font-weight: 500;
+      color: var(--cream);
+    }
+
+    .use-recording-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .use-recording-toggle.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .clear-recording-btn {
+      padding: 0.3rem 0.5rem;
+      background: transparent;
+      border: 1px solid var(--wood-mid);
+      color: var(--cream-dim);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.5rem;
+      cursor: pointer;
+      border-radius: 3px;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+
+    .clear-recording-btn:hover {
+      border-color: #c44;
+      color: #c44;
+    }
+
+    .clear-recording-btn.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* Count-in overlay */
+    .count-in-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 20, 16, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .count-in-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .count-in-display {
+      font-family: 'Instrument Serif', serif;
+      font-size: 8rem;
+      font-style: italic;
+      color: var(--cream);
+      text-shadow: 0 0 60px rgba(255, 170, 51, 0.6);
+    }
+
+    .count-in-display.recording-active {
+      color: #f55;
+      text-shadow: 0 0 60px rgba(255, 85, 85, 0.6);
+    }
+
+    /* Record controls row */
+    .record-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .save-recording-btn {
+      padding: 0.3rem 0.5rem;
+      background: transparent;
+      border: 1px solid var(--group-3);
+      color: var(--group-3);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.5rem;
+      cursor: pointer;
+      border-radius: 3px;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+
+    .save-recording-btn:hover {
+      background: rgba(74, 158, 140, 0.2);
+    }
+
+    .save-recording-btn.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .solo-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .solo-toggle.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .solo-toggle .toggle-switch.active {
+      background: var(--accent-orange);
+    }
+
+    .saved-recordings-select {
+      padding: 0.35rem 0.5rem;
+      background: var(--bg-deep);
+      border: 1px solid var(--wood-mid);
+      color: var(--cream);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem;
+      border-radius: 4px;
+      cursor: pointer;
+      min-width: 80px;
+    }
+
+    .saved-recordings-select:focus {
+      outline: none;
+      border-color: var(--accent-gold);
+    }
+
+    .saved-recordings-select.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .saved-recordings-select option {
+      background: var(--bg-panel);
+      color: var(--cream);
+    }
   </style>
 </head>
 <body>
@@ -689,6 +911,10 @@
       <h2>Bembe Bell Pattern</h2>
       <p>Click anywhere to begin</p>
     </div>
+  </div>
+
+  <div class="count-in-overlay" id="countInOverlay">
+    <div class="count-in-display" id="countInDisplay">4</div>
   </div>
 
   <div class="container">
@@ -770,6 +996,29 @@
             <button class="sound-btn" data-sound="woodblock">Wood</button>
           </div>
         </div>
+        <div class="record-section">
+          <button class="record-btn" id="recordBtn" title="Record your own bell pattern">
+            <div class="record-dot"></div>
+          </button>
+          <div class="record-status" id="recordStatus">
+            Record 4 cycles at current tempo
+          </div>
+          <button class="save-recording-btn disabled" id="saveRecordingBtn">Save</button>
+        </div>
+        <div class="record-controls">
+          <div class="use-recording-toggle disabled" id="useRecordingToggle">
+            <div class="toggle-switch" id="useRecordingSwitch"></div>
+            <span class="toggle-label">Use</span>
+          </div>
+          <div class="solo-toggle disabled" id="soloToggle">
+            <div class="toggle-switch" id="soloSwitch"></div>
+            <span class="toggle-label">Solo</span>
+          </div>
+          <select class="saved-recordings-select disabled" id="savedRecordingsSelect">
+            <option value="-1">Current</option>
+          </select>
+          <button class="clear-recording-btn disabled" id="clearRecordingBtn">Clear</button>
+        </div>
       </div>
 
       <!-- Charleston -->
@@ -817,6 +1066,21 @@
     let charlestonSound = 'hihat-closed';
     let loop = null;
 
+    // Recording state
+    let isRecording = false;
+    let recordingTempo = 90;  // Tempo at which recording was made
+    let recordedBuffer = null;  // AudioBuffer of recorded audio
+    let grainPlayer = null;  // Tone.GrainPlayer for time-stretched playback
+    let useRecording = false;  // Whether to use recorded sample instead of synth
+    let soloRecording = false;  // Mute all synth sounds when true
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    const RECORD_CYCLES = 4;  // Number of cycles to record
+
+    // Saved recordings (in-memory session storage)
+    let savedRecordings = [];  // Array of { buffer, tempo, timestamp, name }
+    let currentRecordingIndex = -1;  // Index of currently selected saved recording
+
     // DOM elements
     const startPrompt = document.getElementById('startPrompt');
     const playBtn = document.getElementById('playBtn');
@@ -831,6 +1095,19 @@
     const patternDisplay = document.getElementById('patternDisplay');
     const charlestonToggle = document.getElementById('charlestonToggle');
     const charlestonControls = document.getElementById('charlestonControls');
+
+    // Recording DOM elements
+    const countInOverlay = document.getElementById('countInOverlay');
+    const countInDisplay = document.getElementById('countInDisplay');
+    const recordBtn = document.getElementById('recordBtn');
+    const recordStatus = document.getElementById('recordStatus');
+    const useRecordingToggle = document.getElementById('useRecordingToggle');
+    const useRecordingSwitch = document.getElementById('useRecordingSwitch');
+    const soloToggle = document.getElementById('soloToggle');
+    const soloSwitch = document.getElementById('soloSwitch');
+    const saveRecordingBtn = document.getElementById('saveRecordingBtn');
+    const savedRecordingsSelect = document.getElementById('savedRecordingsSelect');
+    const clearRecordingBtn = document.getElementById('clearRecordingBtn');
 
     // Sound definitions
     const soundFactories = {
@@ -1095,21 +1372,26 @@
     }
 
     function playBeat(beat, time) {
+      // Skip all synth sounds if solo mode is enabled with recording
+      const muteAllSynths = useRecording && soloRecording;
+
       // Pulse accents
-      if (grouping === '3' || grouping === 'both') {
-        if (beat % 3 === 0) triggerSound(pulse3SynthData, '16n', time);
-      }
-      if (grouping === '4' || grouping === 'both') {
-        if (beat % 4 === 0) triggerSound(pulse4SynthData, '16n', time);
+      if (!muteAllSynths) {
+        if (grouping === '3' || grouping === 'both') {
+          if (beat % 3 === 0) triggerSound(pulse3SynthData, '16n', time);
+        }
+        if (grouping === '4' || grouping === 'both') {
+          if (beat % 4 === 0) triggerSound(pulse4SynthData, '16n', time);
+        }
       }
 
-      // Bell pattern
-      if (BEMBE_PATTERN[beat]) {
+      // Bell pattern (skip if using recorded sample)
+      if (BEMBE_PATTERN[beat] && !useRecording) {
         triggerSound(bellSynthData, '32n', time);
       }
 
       // Charleston
-      if (charlestonEnabled && CHARLESTON_PATTERN[beat]) {
+      if (!muteAllSynths && charlestonEnabled && CHARLESTON_PATTERN[beat]) {
         triggerSound(charlestonSynthData, '16n', time);
       }
     }
@@ -1118,6 +1400,10 @@
       if (isPlaying) {
         Tone.Transport.stop();
         Tone.Transport.cancel();
+        // Stop grain player if using recording
+        if (useRecording && grainPlayer) {
+          grainPlayer.stop();
+        }
         isPlaying = false;
         playBtn.classList.remove('playing');
         currentBeat = -1;
@@ -1142,6 +1428,10 @@
 
         loop.start(0);
         Tone.Transport.start();
+        // Start grain player if using recording
+        if (useRecording && grainPlayer) {
+          grainPlayer.start();
+        }
         isPlaying = true;
         playBtn.classList.add('playing');
       }
@@ -1177,6 +1467,8 @@
       tempo = newTempo;
       tempoDisplay.textContent = String(tempo);
       Tone.Transport.bpm.value = tempo;
+      // Update grain player rate for tempo-matched playback
+      updateGrainPlayerRate();
     }
 
     function changeSwing(newSwing) {
@@ -1202,6 +1494,408 @@
       charlestonControls.classList.toggle('disabled', !charlestonEnabled);
       updateAccentMarkers();
     }
+
+    // ===== RECORDING FUNCTIONS =====
+
+    // Calculate duration of one cycle in seconds at given tempo
+    function getCycleDuration(bpm) {
+      // 12 eighth notes per cycle, tempo is in quarter notes per minute
+      // 1 quarter = 2 eighths, so 12 eighths = 6 quarters
+      // Duration = 6 quarters * (60 / bpm) seconds
+      return (6 * 60) / bpm;
+    }
+
+    // Start recording process with count-in
+    async function startRecording() {
+      if (isRecording) return;
+
+      // Stop playback if running
+      if (isPlaying) {
+        togglePlay();
+      }
+
+      // Request microphone permission
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (err) {
+        recordStatus.textContent = 'Microphone access denied';
+        return;
+      }
+
+      recordingTempo = tempo;
+      recordedChunks = [];
+
+      // Set up MediaRecorder
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          recordedChunks.push(e.data);
+        }
+      };
+      mediaRecorder.onstop = () => {
+        stream.getTracks().forEach(track => track.stop());
+        processRecording();
+      };
+
+      // Start count-in
+      await doCountIn();
+
+      // Start recording
+      isRecording = true;
+      recordBtn.classList.add('recording');
+      recordStatus.classList.add('recording');
+      countInDisplay.classList.add('recording-active');
+
+      mediaRecorder.start();
+
+      // Record for the duration of RECORD_CYCLES cycles
+      const cycleDuration = getCycleDuration(recordingTempo);
+      const totalDuration = cycleDuration * RECORD_CYCLES * 1000; // in ms
+
+      // Show cycle 1 immediately
+      countInDisplay.textContent = '1';
+      recordStatus.textContent = 'Recording cycle 1 of ' + RECORD_CYCLES + '...';
+
+      // Schedule cycle count updates using Tone.Transport for accurate timing
+      // Each cycle is 12 eighth notes, we schedule updates at the start of each cycle
+      for (let cycle = 2; cycle <= RECORD_CYCLES; cycle++) {
+        const cycleStartBeats = (cycle - 1) * 12; // Which eighth note this cycle starts on
+        Tone.Transport.scheduleOnce((time) => {
+          Tone.Draw.schedule(() => {
+            countInDisplay.textContent = String(cycle);
+            recordStatus.textContent = 'Recording cycle ' + cycle + ' of ' + RECORD_CYCLES + '...';
+          }, time);
+        }, { '8n': cycleStartBeats });
+      }
+
+      // Play click track during recording
+      startClickTrack();
+
+      // Schedule recording stop
+      const totalBeats = RECORD_CYCLES * 12;
+      Tone.Transport.scheduleOnce(() => {
+        stopRecording();
+      }, { '8n': totalBeats });
+    }
+
+    // Count-in before recording using Tone.Transport for accurate timing
+    // Counts 1-2-3-4 where each number lasts 3 eighth notes (one cycle in 12/8)
+    function doCountIn() {
+      return new Promise((resolve) => {
+        countInOverlay.classList.add('active');
+        countInDisplay.classList.remove('recording-active');
+
+        const countInBeats = 12; // One full cycle count-in (4 counts x 3 eighth notes each)
+        let beat = 0;
+
+        // Click synth for count-in
+        const clickSynth = new Tone.MembraneSynth({
+          pitchDecay: 0.01,
+          octaves: 4,
+          oscillator: { type: 'sine' },
+          envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.05 }
+        }).toDestination();
+        clickSynth.volume.value = -6;
+
+        // Use Tone.Transport for precise timing
+        Tone.Transport.bpm.value = tempo;
+        Tone.Transport.cancel();
+
+        const countInLoop = new Tone.Loop((time) => {
+          // Stop if we've already processed all beats
+          if (beat >= countInBeats) {
+            countInLoop.stop();
+            return;
+          }
+
+          // Display count 1-2-3-4, each lasting 3 eighth notes
+          const displayCount = Math.floor(beat / 3) + 1;
+          const isDownbeat = (beat % 3 === 0);
+
+          // Schedule visual update only on downbeats (every 3 eighth notes)
+          if (isDownbeat) {
+            Tone.Draw.schedule(() => {
+              countInDisplay.textContent = String(displayCount);
+            }, time);
+            // Accent click on each count
+            clickSynth.triggerAttackRelease('G3', '16n', time);
+          } else {
+            // Softer subdivision click
+            clickSynth.triggerAttackRelease('C3', '32n', time);
+          }
+
+          beat++;
+          if (beat >= countInBeats) {
+            // Schedule cleanup and resolve after the last beat plays
+            Tone.Transport.scheduleOnce(() => {
+              countInLoop.dispose();
+              Tone.Transport.stop();
+              Tone.Transport.cancel();
+              clickSynth.dispose();
+              resolve();
+            }, '+8n');
+          }
+        }, '8n');
+
+        countInLoop.start(0);
+        Tone.Transport.start();
+      });
+    }
+
+    // Click track during recording
+    let clickTrackLoop = null;
+    function startClickTrack() {
+      const clickSynth = new Tone.MembraneSynth({
+        pitchDecay: 0.01,
+        octaves: 4,
+        oscillator: { type: 'sine' },
+        envelope: { attack: 0.001, decay: 0.08, sustain: 0, release: 0.04 }
+      }).toDestination();
+      clickSynth.volume.value = -10;
+
+      Tone.Transport.bpm.value = recordingTempo;
+      let beatIndex = 0;
+
+      clickTrackLoop = new Tone.Loop((time) => {
+        const beat = beatIndex % 12;
+        if (beat === 0) {
+          clickSynth.triggerAttackRelease('G3', '16n', time);
+        } else if (beat % 3 === 0) {
+          clickSynth.triggerAttackRelease('E3', '32n', time);
+        }
+        beatIndex++;
+      }, '8n');
+
+      clickTrackLoop.start(0);
+      Tone.Transport.start();
+    }
+
+    function stopClickTrack() {
+      if (clickTrackLoop) {
+        clickTrackLoop.stop();
+        clickTrackLoop.dispose();
+        clickTrackLoop = null;
+      }
+      Tone.Transport.stop();
+      Tone.Transport.cancel();
+    }
+
+    // Stop recording
+    function stopRecording() {
+      if (!isRecording) return;
+
+      isRecording = false;
+      stopClickTrack();
+      countInOverlay.classList.remove('active');
+
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+
+      recordBtn.classList.remove('recording');
+      recordStatus.classList.remove('recording');
+      recordStatus.textContent = 'Processing...';
+    }
+
+    // Process the recorded audio
+    async function processRecording() {
+      if (recordedChunks.length === 0) {
+        recordStatus.textContent = 'Recording failed';
+        return;
+      }
+
+      const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+      const arrayBuffer = await blob.arrayBuffer();
+
+      try {
+        // Decode audio data
+        const audioContext = Tone.context.rawContext;
+        recordedBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+        // Create GrainPlayer for time-stretched playback
+        createGrainPlayer();
+
+        // Update UI
+        recordBtn.classList.add('has-recording');
+        recordStatus.classList.add('has-recording');
+        recordStatus.textContent = 'Recorded ' + RECORD_CYCLES + ' cycles at ' + recordingTempo + ' BPM';
+        useRecordingToggle.classList.remove('disabled');
+        soloToggle.classList.remove('disabled');
+        saveRecordingBtn.classList.remove('disabled');
+        clearRecordingBtn.classList.remove('disabled');
+
+        // Enable dropdown if there are saved recordings
+        if (savedRecordings.length > 0) {
+          savedRecordingsSelect.classList.remove('disabled');
+        }
+
+      } catch (err) {
+        console.error('Error processing recording:', err);
+        recordStatus.textContent = 'Error processing recording';
+      }
+    }
+
+    // Create GrainPlayer from recorded buffer
+    function createGrainPlayer() {
+      if (grainPlayer) {
+        grainPlayer.dispose();
+      }
+
+      // Create a Tone.js buffer from the recorded buffer
+      const toneBuffer = new Tone.Buffer(recordedBuffer);
+
+      grainPlayer = new Tone.GrainPlayer({
+        url: toneBuffer,
+        loop: true,
+        grainSize: 0.1,
+        overlap: 0.05,
+        playbackRate: 1
+      }).toDestination();
+
+      grainPlayer.volume.value = -3;
+
+      // Set playback rate based on tempo difference
+      updateGrainPlayerRate();
+    }
+
+    // Update GrainPlayer playback rate when tempo changes
+    function updateGrainPlayerRate() {
+      if (grainPlayer && recordedBuffer) {
+        // Playback rate = current tempo / recording tempo
+        const rate = tempo / recordingTempo;
+        grainPlayer.playbackRate = rate;
+      }
+    }
+
+    // Toggle using recorded sample
+    function toggleUseRecording() {
+      if (!recordedBuffer) return;
+
+      useRecording = !useRecording;
+      useRecordingSwitch.classList.toggle('active', useRecording);
+
+      if (useRecording && isPlaying) {
+        // Start grain player synced to transport
+        grainPlayer.start();
+      } else if (!useRecording && grainPlayer) {
+        grainPlayer.stop();
+      }
+    }
+
+    // Toggle solo mode (mute all synths when using recording)
+    function toggleSolo() {
+      soloRecording = !soloRecording;
+      soloSwitch.classList.toggle('active', soloRecording);
+    }
+
+    // Save current recording to session storage
+    function saveRecording() {
+      if (!recordedBuffer) return;
+
+      const recording = {
+        buffer: recordedBuffer,
+        tempo: recordingTempo,
+        timestamp: Date.now(),
+        name: 'Take ' + (savedRecordings.length + 1) + ' (' + recordingTempo + ' BPM)'
+      };
+
+      savedRecordings.push(recording);
+      currentRecordingIndex = savedRecordings.length - 1;
+
+      // Update dropdown
+      updateSavedRecordingsDropdown();
+      savedRecordingsSelect.value = String(currentRecordingIndex);
+      savedRecordingsSelect.classList.remove('disabled');
+    }
+
+    // Update the saved recordings dropdown
+    function updateSavedRecordingsDropdown() {
+      // Clear existing options except "Current"
+      while (savedRecordingsSelect.options.length > 1) {
+        savedRecordingsSelect.remove(1);
+      }
+
+      // Add saved recordings
+      savedRecordings.forEach((rec, index) => {
+        const option = document.createElement('option');
+        option.value = String(index);
+        option.textContent = rec.name;
+        savedRecordingsSelect.appendChild(option);
+      });
+    }
+
+    // Load a saved recording
+    function loadSavedRecording(index) {
+      if (index < 0 || index >= savedRecordings.length) {
+        // "Current" selected - keep current recording
+        currentRecordingIndex = -1;
+        return;
+      }
+
+      const recording = savedRecordings[index];
+      currentRecordingIndex = index;
+
+      // Stop current playback if using recording
+      if (useRecording && grainPlayer) {
+        grainPlayer.stop();
+      }
+
+      // Load the saved recording
+      recordedBuffer = recording.buffer;
+      recordingTempo = recording.tempo;
+
+      // Recreate grain player with saved buffer
+      createGrainPlayer();
+
+      // Update status
+      recordStatus.textContent = recording.name;
+      recordStatus.classList.add('has-recording');
+      recordBtn.classList.add('has-recording');
+
+      // Restart playback if it was playing
+      if (useRecording && isPlaying && grainPlayer) {
+        grainPlayer.start();
+      }
+    }
+
+    // Clear recorded sample
+    function clearRecording() {
+      if (grainPlayer) {
+        grainPlayer.stop();
+        grainPlayer.dispose();
+        grainPlayer = null;
+      }
+      recordedBuffer = null;
+      useRecording = false;
+      soloRecording = false;
+      recordedChunks = [];
+      currentRecordingIndex = -1;
+
+      recordBtn.classList.remove('has-recording');
+      recordStatus.classList.remove('has-recording');
+      recordStatus.textContent = 'Record ' + RECORD_CYCLES + ' cycles at current tempo';
+      useRecordingToggle.classList.add('disabled');
+      useRecordingSwitch.classList.remove('active');
+      soloToggle.classList.add('disabled');
+      soloSwitch.classList.remove('active');
+      saveRecordingBtn.classList.add('disabled');
+      clearRecordingBtn.classList.add('disabled');
+
+      // Reset dropdown to "Current" but keep saved recordings available
+      savedRecordingsSelect.value = '-1';
+    }
+
+    // Toggle record button (start or stop)
+    function toggleRecord() {
+      if (isRecording) {
+        stopRecording();
+      } else {
+        startRecording();
+      }
+    }
+
+    // ===== END RECORDING FUNCTIONS =====
 
     // Event listeners
     startPrompt.addEventListener('click', async () => {
@@ -1330,6 +2024,16 @@
     });
 
     charlestonToggle.addEventListener('click', toggleCharleston);
+
+    // Recording controls
+    recordBtn.addEventListener('click', toggleRecord);
+    useRecordingSwitch.addEventListener('click', toggleUseRecording);
+    soloSwitch.addEventListener('click', toggleSolo);
+    saveRecordingBtn.addEventListener('click', saveRecording);
+    savedRecordingsSelect.addEventListener('change', (e) => {
+      loadSavedRecording(parseInt(e.target.value));
+    });
+    clearRecordingBtn.addEventListener('click', clearRecording);
 
     // Keyboard controls
     document.addEventListener('keydown', (e) => {
