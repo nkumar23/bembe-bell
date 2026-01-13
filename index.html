@@ -831,6 +831,50 @@
       text-shadow: 0 0 60px rgba(255, 85, 85, 0.6);
     }
 
+    /* Beat progress indicator */
+    .beat-progress {
+      display: flex;
+      gap: 8px;
+      margin-top: 2rem;
+    }
+
+    .beat-progress .beat-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--bg-panel);
+      border: 2px solid var(--wood-mid);
+      transition: all 0.1s ease;
+    }
+
+    .beat-progress .beat-dot.active {
+      background: var(--accent-gold);
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 12px var(--accent-gold);
+    }
+
+    .beat-progress .beat-dot.downbeat {
+      width: 20px;
+      height: 20px;
+    }
+
+    .count-in-overlay.recording-active .beat-progress .beat-dot.active {
+      background: #f55;
+      border-color: #f55;
+      box-shadow: 0 0 12px #f55;
+    }
+
+    /* Silent click toggle */
+    .silent-click-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .silent-click-toggle .toggle-switch.active {
+      background: var(--accent-gold);
+    }
+
     /* Record controls row */
     .record-controls {
       display: flex;
@@ -915,6 +959,20 @@
 
   <div class="count-in-overlay" id="countInOverlay">
     <div class="count-in-display" id="countInDisplay">4</div>
+    <div class="beat-progress" id="beatProgress">
+      <div class="beat-dot"></div>
+      <div class="beat-dot"></div>
+      <div class="beat-dot"></div>
+      <div class="beat-dot"></div>
+      <div class="beat-dot"></div>
+      <div class="beat-dot"></div>
+      <div class="beat-dot"></div>
+      <div class="beat-dot"></div>
+      <div class="beat-dot"></div>
+      <div class="beat-dot"></div>
+      <div class="beat-dot"></div>
+      <div class="beat-dot"></div>
+    </div>
   </div>
 
   <div class="container">
@@ -1003,6 +1061,10 @@
           <div class="record-status" id="recordStatus">
             Record 4 cycles at current tempo
           </div>
+          <div class="silent-click-toggle" id="silentClickToggle" title="Mute click track during recording">
+            <div class="toggle-switch" id="silentClickSwitch"></div>
+            <span class="toggle-label">Silent</span>
+          </div>
           <button class="save-recording-btn disabled" id="saveRecordingBtn">Save</button>
         </div>
         <div class="record-controls">
@@ -1073,6 +1135,7 @@
     let grainPlayer = null;  // Tone.GrainPlayer for time-stretched playback
     let useRecording = false;  // Whether to use recorded sample instead of synth
     let soloRecording = false;  // Mute all synth sounds when true
+    let silentClick = false;  // Mute click track during recording (visual only)
     let mediaRecorder = null;
     let recordedChunks = [];
     const RECORD_CYCLES = 4;  // Number of cycles to record
@@ -1099,8 +1162,11 @@
     // Recording DOM elements
     const countInOverlay = document.getElementById('countInOverlay');
     const countInDisplay = document.getElementById('countInDisplay');
+    const beatProgress = document.getElementById('beatProgress');
+    const beatDots = beatProgress.querySelectorAll('.beat-dot');
     const recordBtn = document.getElementById('recordBtn');
     const recordStatus = document.getElementById('recordStatus');
+    const silentClickSwitch = document.getElementById('silentClickSwitch');
     const useRecordingToggle = document.getElementById('useRecordingToggle');
     const useRecordingSwitch = document.getElementById('useRecordingSwitch');
     const soloToggle = document.getElementById('soloToggle');
@@ -1497,6 +1563,32 @@
 
     // ===== RECORDING FUNCTIONS =====
 
+    // Toggle silent click mode
+    function toggleSilentClick() {
+      silentClick = !silentClick;
+      silentClickSwitch.classList.toggle('active', silentClick);
+    }
+
+    // Update visual beat progress (0-11 for 12 beats)
+    function updateBeatProgress(beatIndex) {
+      beatDots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === beatIndex);
+        dot.classList.toggle('downbeat', i % 3 === 0);
+      });
+    }
+
+    // Reset beat progress
+    function resetBeatProgress() {
+      beatDots.forEach(dot => {
+        dot.classList.remove('active');
+        dot.classList.add('downbeat');
+      });
+      // Mark downbeats
+      beatDots.forEach((dot, i) => {
+        dot.classList.toggle('downbeat', i % 3 === 0);
+      });
+    }
+
     // Calculate duration of one cycle in seconds at given tempo
     function getCycleDuration(bpm) {
       // 12 eighth notes per cycle, tempo is in quarter notes per minute
@@ -1585,18 +1677,22 @@
       return new Promise((resolve) => {
         countInOverlay.classList.add('active');
         countInDisplay.classList.remove('recording-active');
+        resetBeatProgress();
 
         const countInBeats = 12; // One full cycle count-in (4 counts x 3 eighth notes each)
         let beat = 0;
 
-        // Click synth for count-in
-        const clickSynth = new Tone.MembraneSynth({
-          pitchDecay: 0.01,
-          octaves: 4,
-          oscillator: { type: 'sine' },
-          envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.05 }
-        }).toDestination();
-        clickSynth.volume.value = -6;
+        // Click synth for count-in (only used if not silent)
+        let clickSynth = null;
+        if (!silentClick) {
+          clickSynth = new Tone.MembraneSynth({
+            pitchDecay: 0.01,
+            octaves: 4,
+            oscillator: { type: 'sine' },
+            envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.05 }
+          }).toDestination();
+          clickSynth.volume.value = -6;
+        }
 
         // Use Tone.Transport for precise timing
         Tone.Transport.bpm.value = tempo;
@@ -1612,17 +1708,23 @@
           // Display count 1-2-3-4, each lasting 3 eighth notes
           const displayCount = Math.floor(beat / 3) + 1;
           const isDownbeat = (beat % 3 === 0);
+          const currentBeat = beat;
 
-          // Schedule visual update only on downbeats (every 3 eighth notes)
-          if (isDownbeat) {
-            Tone.Draw.schedule(() => {
+          // Schedule visual updates
+          Tone.Draw.schedule(() => {
+            updateBeatProgress(currentBeat % 12);
+            if (isDownbeat) {
               countInDisplay.textContent = String(displayCount);
-            }, time);
-            // Accent click on each count
-            clickSynth.triggerAttackRelease('G3', '16n', time);
-          } else {
-            // Softer subdivision click
-            clickSynth.triggerAttackRelease('C3', '32n', time);
+            }
+          }, time);
+
+          // Play click sounds (if not silent)
+          if (clickSynth) {
+            if (isDownbeat) {
+              clickSynth.triggerAttackRelease('G3', '16n', time);
+            } else {
+              clickSynth.triggerAttackRelease('C3', '32n', time);
+            }
           }
 
           beat++;
@@ -1632,7 +1734,7 @@
               countInLoop.dispose();
               Tone.Transport.stop();
               Tone.Transport.cancel();
-              clickSynth.dispose();
+              if (clickSynth) clickSynth.dispose();
               resolve();
             }, '+8n');
           }
@@ -1645,24 +1747,38 @@
 
     // Click track during recording
     let clickTrackLoop = null;
+    let clickTrackSynth = null;
     function startClickTrack() {
-      const clickSynth = new Tone.MembraneSynth({
-        pitchDecay: 0.01,
-        octaves: 4,
-        oscillator: { type: 'sine' },
-        envelope: { attack: 0.001, decay: 0.08, sustain: 0, release: 0.04 }
-      }).toDestination();
-      clickSynth.volume.value = -10;
+      // Only create synth if not silent
+      if (!silentClick) {
+        clickTrackSynth = new Tone.MembraneSynth({
+          pitchDecay: 0.01,
+          octaves: 4,
+          oscillator: { type: 'sine' },
+          envelope: { attack: 0.001, decay: 0.08, sustain: 0, release: 0.04 }
+        }).toDestination();
+        clickTrackSynth.volume.value = -10;
+      }
 
       Tone.Transport.bpm.value = recordingTempo;
       let beatIndex = 0;
 
       clickTrackLoop = new Tone.Loop((time) => {
         const beat = beatIndex % 12;
-        if (beat === 0) {
-          clickSynth.triggerAttackRelease('G3', '16n', time);
-        } else if (beat % 3 === 0) {
-          clickSynth.triggerAttackRelease('E3', '32n', time);
+        const currentBeat = beat;
+
+        // Always update visual progress
+        Tone.Draw.schedule(() => {
+          updateBeatProgress(currentBeat);
+        }, time);
+
+        // Play click sounds (if not silent)
+        if (clickTrackSynth) {
+          if (beat === 0) {
+            clickTrackSynth.triggerAttackRelease('G3', '16n', time);
+          } else if (beat % 3 === 0) {
+            clickTrackSynth.triggerAttackRelease('E3', '32n', time);
+          }
         }
         beatIndex++;
       }, '8n');
@@ -1677,8 +1793,13 @@
         clickTrackLoop.dispose();
         clickTrackLoop = null;
       }
+      if (clickTrackSynth) {
+        clickTrackSynth.dispose();
+        clickTrackSynth = null;
+      }
       Tone.Transport.stop();
       Tone.Transport.cancel();
+      resetBeatProgress();
     }
 
     // Stop recording
@@ -2027,6 +2148,7 @@
 
     // Recording controls
     recordBtn.addEventListener('click', toggleRecord);
+    silentClickSwitch.addEventListener('click', toggleSilentClick);
     useRecordingSwitch.addEventListener('click', toggleUseRecording);
     soloSwitch.addEventListener('click', toggleSolo);
     saveRecordingBtn.addEventListener('click', saveRecording);
