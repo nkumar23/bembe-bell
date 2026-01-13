@@ -864,14 +864,14 @@
       box-shadow: 0 0 12px #f55;
     }
 
-    /* Silent click toggle */
-    .silent-click-toggle {
+    /* Metro toggle */
+    .metro-toggle {
       display: flex;
       align-items: center;
       gap: 0.4rem;
     }
 
-    .silent-click-toggle .toggle-switch.active {
+    .metro-toggle .toggle-switch.active {
       background: var(--accent-gold);
     }
 
@@ -1061,9 +1061,9 @@
           <div class="record-status" id="recordStatus">
             Record 4 cycles at current tempo
           </div>
-          <div class="silent-click-toggle" id="silentClickToggle" title="Mute click track during recording">
-            <div class="toggle-switch" id="silentClickSwitch"></div>
-            <span class="toggle-label">Silent</span>
+          <div class="metro-toggle" id="metroToggle" title="Metronome click during recording">
+            <div class="toggle-switch active" id="metroSwitch"></div>
+            <span class="toggle-label">Metro</span>
           </div>
           <button class="save-recording-btn disabled" id="saveRecordingBtn">Save</button>
         </div>
@@ -1135,7 +1135,7 @@
     let grainPlayer = null;  // Tone.GrainPlayer for time-stretched playback
     let useRecording = false;  // Whether to use recorded sample instead of synth
     let soloRecording = false;  // Mute all synth sounds when true
-    let silentClick = false;  // Mute click track during recording (visual only)
+    let metronomeOn = true;  // Play click track during recording
     let mediaRecorder = null;
     let recordedChunks = [];
     const RECORD_CYCLES = 4;  // Number of cycles to record
@@ -1166,7 +1166,7 @@
     const beatDots = beatProgress.querySelectorAll('.beat-dot');
     const recordBtn = document.getElementById('recordBtn');
     const recordStatus = document.getElementById('recordStatus');
-    const silentClickSwitch = document.getElementById('silentClickSwitch');
+    const metroSwitch = document.getElementById('metroSwitch');
     const useRecordingToggle = document.getElementById('useRecordingToggle');
     const useRecordingSwitch = document.getElementById('useRecordingSwitch');
     const soloToggle = document.getElementById('soloToggle');
@@ -1563,10 +1563,10 @@
 
     // ===== RECORDING FUNCTIONS =====
 
-    // Toggle silent click mode
-    function toggleSilentClick() {
-      silentClick = !silentClick;
-      silentClickSwitch.classList.toggle('active', silentClick);
+    // Toggle metronome click mode
+    function toggleMetronome() {
+      metronomeOn = !metronomeOn;
+      metroSwitch.classList.toggle('active', metronomeOn);
     }
 
     // Update visual beat progress (0-11 for 12 beats)
@@ -1682,9 +1682,9 @@
         const countInBeats = 12; // One full cycle count-in (4 counts x 3 eighth notes each)
         let beat = 0;
 
-        // Click synth for count-in (only used if not silent)
+        // Click synth for count-in (only used if metronome is on)
         let clickSynth = null;
-        if (!silentClick) {
+        if (metronomeOn) {
           clickSynth = new Tone.MembraneSynth({
             pitchDecay: 0.01,
             octaves: 4,
@@ -1749,8 +1749,8 @@
     let clickTrackLoop = null;
     let clickTrackSynth = null;
     function startClickTrack() {
-      // Only create synth if not silent
-      if (!silentClick) {
+      // Only create synth if metronome is on
+      if (metronomeOn) {
         clickTrackSynth = new Tone.MembraneSynth({
           pitchDecay: 0.01,
           octaves: 4,
@@ -2148,7 +2148,7 @@
 
     // Recording controls
     recordBtn.addEventListener('click', toggleRecord);
-    silentClickSwitch.addEventListener('click', toggleSilentClick);
+    metroSwitch.addEventListener('click', toggleMetronome);
     useRecordingSwitch.addEventListener('click', toggleUseRecording);
     soloSwitch.addEventListener('click', toggleSolo);
     saveRecordingBtn.addEventListener('click', saveRecording);
